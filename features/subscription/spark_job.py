@@ -35,7 +35,10 @@ def run(spark, args):
 
     all_subs.createOrReplaceTempView("sub_table")
 
-    sub_sql = get_sub_sql(query_dt, churn_check_date.strftime('%Y-%m-%d'))
+    sub_sql = get_sub_sql(
+        query_dt=query_dt,
+        max_expiration_dt=next_month_date.strftime('%Y-%m-%d'),
+        after_expiration_dt=churn_check_date.strftime('%Y-%m-%d'))
     subs = spark.sql(sub_sql)
 
     subs.write.parquet(args['output_path'], mode='overwrite')

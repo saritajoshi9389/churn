@@ -1,4 +1,4 @@
-def get_sub_sql(query_date, after_expiration):
+def get_sub_sql(query_dt='', max_expiration_dt='', after_expiration_dt=''):
     return """
     select
       query_date.user_id,
@@ -41,7 +41,10 @@ def get_sub_sql(query_date, after_expiration):
          sub_table
       where
         dt = '{query_date}'
-        and current_subscription_end_date >=  '{query_date}'
+        -- exclude those mysteriously active but expired
+        and date_format(current_subscription_end_date, 'yyyy-MM-dd') >= '{query_date}'
+        -- only with one-month expiration terms
+        and date_format(current_subscription_end_date, 'yyyy-MM-dd') <= '{max_expiration_date}'
         and current_subscription_state = 2
         and external_user_id is not null
     ) query_date
@@ -65,7 +68,7 @@ def get_sub_sql(query_date, after_expiration):
     on
       query_date.user_id = later_dates.user_id
     where
-      later_dates.dt >= query_date.current_subscription_end_date
+      later_dates.dt >= date_format(query_date.current_subscription_end_date, 'yyyy-MM-dd')
     group by
       query_date.user_id,
       case
@@ -88,4 +91,6 @@ def get_sub_sql(query_date, after_expiration):
           else
              datediff(last_disconnect_date, first_purchase_date)  + datediff(to_date('{query_date}', 'yyyy-MM-dd'), last_reconnect_date)
       end
-    """.format(query_date=query_date, after_expiration=after_expiration)
+    """.format(query_date=query_dt,
+               max_expiration_date=max_expiration_dt,
+               after_expiration=after_expiration_dt)
