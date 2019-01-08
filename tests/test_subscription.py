@@ -6,35 +6,15 @@ from features.subscription import spark_job
 from tests import sub_helper
 
 
-def test_next_month_1():
-    next_mo = spark_job.get_next_month('2018-12-31')
-    assert next_mo.month == 1
-
-
-def test_next_month_2():
-    next_mo = spark_job.get_next_month('2019-01-31')
-    assert next_mo.day == 28
-
-
-def test_input_paths():
-    s3 = 's3://mybucket/'
-    dates = [datetime(2018, 11, 29), datetime(2018, 12, 29), datetime(2019, 01, 04)]
-    input_paths = spark_job.get_input_paths(s3, dates)
-    assert 's3://mybucket/yr=2019/mo=01' in input_paths
-    assert 's3://mybucket/yr=2018/mo=12' in input_paths
-    assert 's3://mybucket/yr=2018/mo=11' in input_paths
-
-
 def setup_sample(spark, records=None, dt='', input_path=''):
     """Build a Spark DataFrame out of records from sub_helper and write to parquet."""
     rows = [Row(**record) for record in records]
     data = spark.createDataFrame(rows)
 
     timestamp_cols = [
-        'current_subscription_start_date', 'current_subscription_end_date',
-        'first_purchase_date', 'last_conversion_date',
-        'last_reconnect_date', 'last_disconnect_date']
-
+        'subscription_start_date',
+        'subscription_expire_date',
+        'first_purchase_date']
     for col in timestamp_cols:
         data = data.withColumn(col, data[col].cast('timestamp'))
 
@@ -49,9 +29,7 @@ def validate_job(spark, output_path):
     datatypes = dict(data.dtypes)
     assert data.count() == 3
     for col in ['has_disconnected',
-                'current_days_active',
-                'previous_days_active',
-                'total_days_active']:
+                'months_subscribing']:
         assert datatypes[col] == 'int'
     df = pd.DataFrame(data.collect(), columns=data.columns)
     df = df.set_index('user_id')
