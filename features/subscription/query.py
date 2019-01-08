@@ -11,7 +11,7 @@ def get_sub_sql(query_dt='', month_later_dt=''):
           user_id,
           date_format(subscription_expire_date, 'yyyy-MM-dd') expire_dt,
           purchase_n,
-          case when datediff(subscription_start_date, first_purchase_date) - (purchase_n * 30) > 100 then 1 else 0 end has_disconnected
+          case when months_between(subscription_start_date, first_purchase_date) - purchase_n > 3 then 1 else 0 end has_disconnected
       from
          sub_table
       where
