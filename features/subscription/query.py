@@ -17,7 +17,7 @@ def get_sub_sql(query_dt='', month_later_dt=''):
       where
         dt = '{query_date}'
         and subscription_type = 'monthly paying'
-        and subscription_term <= 31
+        and subscription_term < 35
         and subscription_active = 1
     ) query_date
 
