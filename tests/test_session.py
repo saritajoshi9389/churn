@@ -30,9 +30,9 @@ def validate_job(spark, output_path):
 
 def test_job(spark):
     test_args = {
-        'dt': '2019-01-03',
-        'input_path': 'tests/sample_input/performance/',
-        'output_path': 'tests/sample_output/performance/'
+        'dt': '2019-01-10',
+        'input_path': 'tests/sample_input/session/',
+        'output_path': 'tests/sample_output/session/'
     }
     spark_job.run(spark, test_args)
     validate_job(spark, test_args['output_path'])
