@@ -1,10 +1,7 @@
 *.csv
-<<<<<<< HEAD
 *.parquet
 *.crc
-=======
-*.parquet*
->>>>>>> master
+
 
 *.pyc
 
