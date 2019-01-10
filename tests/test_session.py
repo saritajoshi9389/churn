@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import json
 from pyspark.sql import Row
 from features.session import spark_job
@@ -53,3 +54,4 @@ def test_job(spark):
     spark_job.run(spark, test_args)
     validate_activity(spark, test_args['output_path_activity'])
     validate_device(spark, test_args['output_path_device'])
+
