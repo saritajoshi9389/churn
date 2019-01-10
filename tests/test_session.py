@@ -6,15 +6,13 @@ def validate_job(spark, output_path):
     data = spark.read.load(output_path)
     # validate datatypes
     datatypes = dict(data.dtypes)
-    int_columns = ['median_startup_time', 'total_startup_time',
-                   'total_startup_errors', 'median_bitrate',
-                   'median_interrupts', 'total_interrupts',
-                   'median_buffering_time', 'total_buffering_time']
+    int_columns = ['active_days', 'num_essions','total_timespent']
+
     for col in int_columns:
         assert datatypes[col] == 'int' or datatypes[col] == 'bigint'
 
-    double_columns = ['avg_startup_time', 'avg_interrupts',
-                      'avg_buffering_time', 'avg_bitrate']
+    double_columns = ['avg_session_length', 'median_session_length']
+
     for col in double_columns:
         assert datatypes[col] == 'double'
 
@@ -23,11 +21,11 @@ def validate_job(spark, output_path):
     df = df.set_index('user_id')
     data_dict = df.to_dict(orient='index')
 
-    assert data_dict['GORWP105662059']['active_days'] == 4524.0
-    assert data_dict['GORWP105662059']['num_essions'] == 4524
-    assert data_dict['GORWP16177187']['avg_session_length'] == 4439
-    assert data_dict['GORWP2006481']['median_session_length'] == 0
-    assert data_dict['GORWP2006481']['total_timespent'] == 0.0
+    assert data_dict['GORWP105662059']['active_days'] == 4524
+    assert data_dict['GORWP105662059']['num_sessions'] == 475
+    assert data_dict['GORWP16177187']['avg_session_length'] == 237.8
+    assert data_dict['GORWP2006481']['median_session_length'] == 237.8
+    assert data_dict['GORWP2006481']['total_timespent'] == 2561
 
 
 def test_job(spark):
