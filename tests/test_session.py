@@ -1,8 +1,53 @@
 import json
 from pyspark.sql import Row
+from pytest import raises
+
 from features.session import spark_job
 from tests import session_helper
 from tests.utils import get_data_dict
+
+
+def test_rename():
+    """Rename device 'categories' to lowercase w/ no spaces."""
+    assert spark_job.rename('Cool Smart TV 5000)') == 'cool_smart_tv_5000'
+
+
+def test_parse():
+    test_dict = {
+        'properties': {
+            'userId': 1,
+            'sessionId': 'a1',
+            'device': 'ANDROID',
+            'eventTimestamp': '2018-12-04T20:00:00.000Z'
+        }
+    }
+    test_data = Row(value=json.dumps(test_dict), dt='2018-04-21')
+    row = spark_job.parse(test_data)
+    for col in ['user_id', 'session_id', 'device', 'event_timestamp']:
+        assert col in row
+
+
+def test_parse_missing_dt():
+    test_dict = {'some': 'values'}
+    test_data = Row(value=json.dumps(test_dict))
+    with raises(AttributeError):
+        row = spark_job.parse(test_data)
+        assert 'dt' in AttributeError
+
+
+def test_parse_different_schema():
+    """Parse returns rows but with null values for keys not specified."""
+    test_dict = {
+        'properties': {
+            'user_id': 1,
+            'session_id': 'a1',
+            'event_timestamp': '2018-12-04T20:00:00.000Z'
+        }
+    }
+    test_data = Row(value=json.dumps(test_dict), dt='2018-04-21')
+    row = spark_job.parse(test_data)
+    for col in ['user_id', 'session_id', 'device', 'event_timestamp']:
+        assert row[col] is None
 
 
 def setup_sample(spark, records=None, dt='', input_path=''):
@@ -53,4 +98,3 @@ def test_job(spark):
     spark_job.run(spark, test_args)
     validate_activity(spark, test_args['output_path_activity'])
     validate_device(spark, test_args['output_path_device'])
-
