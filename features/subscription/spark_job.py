@@ -1,7 +1,8 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from query import get_sub_sql
+from features import utils
+from features.subscription.query import get_sub_sql
 
 
 def get_next_month(dt):
@@ -20,4 +21,5 @@ def run(spark, args):
         query_dt=query_dt,
         month_later_dt=next_month_date.strftime('%Y-%m-%d'))
     subs = spark.sql(sub_sql)
-    subs.write.parquet(args['output_path'], mode='overwrite')
+    subs.write.parquet(
+        utils.dt_path(args['output_path'], query_dt), mode='overwrite')
