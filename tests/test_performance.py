@@ -1,5 +1,5 @@
-import pandas as pd
 from features.performance import spark_job
+from tests.utils import get_data_dict
 
 
 def validate_job(spark, output_path):
@@ -21,9 +21,7 @@ def validate_job(spark, output_path):
         assert datatypes[col] == 'double'
 
     # validate aggregations
-    df = pd.DataFrame(data.collect(), columns=data.columns)
-    df = df.set_index('user_id')
-    data_dict = df.to_dict(orient='index')
+    data_dict = get_data_dict(data)
 
     assert data_dict['GORWP105662059']['avg_startup_time'] == 4524.0
     assert data_dict['GORWP105662059']['median_startup_time'] == 4524

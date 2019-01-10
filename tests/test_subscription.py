@@ -1,8 +1,8 @@
-import pandas as pd
 from pyspark.sql import Row
 
 from features.subscription import spark_job
 from tests import sub_helper
+from tests.utils import get_data_dict
 
 
 def test_next_month_1():
@@ -37,12 +37,9 @@ def validate_job(spark, output_path):
     data = spark.read.load(output_path)
     datatypes = dict(data.dtypes)
     assert data.count() == 3
-    for col in ['has_disconnected',
-                'months_subscribing']:
+    for col in ['has_disconnected', 'months_subscribing']:
         assert datatypes[col] == 'int' or datatypes[col] == 'bigint'
-    df = pd.DataFrame(data.collect(), columns=data.columns)
-    df = df.set_index('user_id')
-    data_dict = df.to_dict(orient='index')
+    data_dict = get_data_dict(data)
     assert data_dict[1]['churned'] == 0
     assert data_dict[2]['churned'] == 1
     assert data_dict[5]['churned'] == 0
