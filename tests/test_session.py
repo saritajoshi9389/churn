@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import json
 from pyspark.sql import Row
 from features.session import spark_job
