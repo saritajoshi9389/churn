@@ -1,27 +1,27 @@
-import pandas as pd
 from features.performance import spark_job
+from tests.utils import get_data_dict
 
 
 def validate_job(spark, output_path):
     data = spark.read.load(output_path)
     # validate datatypes
     datatypes = dict(data.dtypes)
-    int_columns = ['median_startup_time', 'total_startup_time',
-                   'total_startup_errors', 'median_bitrate',
-                   'median_interrupts', 'total_interrupts',
-                   'median_buffering_time', 'total_buffering_time']
+    int_columns = ['total_startup_time',
+                   'total_startup_errors',
+                   'total_interrupts',
+                   'total_buffering_time']
     for col in int_columns:
         assert datatypes[col] == 'int' or datatypes[col] == 'bigint'
 
     double_columns = ['avg_startup_time', 'avg_interrupts',
-                      'avg_buffering_time', 'avg_bitrate']
+                      'avg_buffering_time', 'avg_bitrate',
+                      'median_startup_time', 'median_bitrate',
+                      'median_interrupts', 'median_buffering_time']
     for col in double_columns:
         assert datatypes[col] == 'double'
 
     # validate aggregations
-    df = pd.DataFrame(data.collect(), columns=data.columns)
-    df = df.set_index('user_id')
-    data_dict = df.to_dict(orient='index')
+    data_dict = get_data_dict(data)
 
     assert data_dict['GORWP105662059']['avg_startup_time'] == 4524.0
     assert data_dict['GORWP105662059']['median_startup_time'] == 4524
