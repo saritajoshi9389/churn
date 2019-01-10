@@ -1,4 +1,5 @@
-import query
+from features import utils
+from features.performance import query
 
 
 def run(spark, args):
@@ -10,5 +11,5 @@ def run(spark, args):
     data_recast.createOrReplaceTempView('conviva_streams')
 
     user_perf_features = spark.sql(query.get_perf_sql(query_dt, days_back=28))
-    user_perf_features.write.parquet(args['output_path'], mode='overwrite')
-
+    user_perf_features.write.parquet(
+        utils.dt_path(args['output_path'], query_dt), mode='overwrite')
