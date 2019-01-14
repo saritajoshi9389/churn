@@ -1,7 +1,7 @@
 *.csv
 *.parquet
 *.crc
-
+*_SUCCESS
 
 *.pyc
 

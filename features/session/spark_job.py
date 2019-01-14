@@ -15,14 +15,10 @@ def parse(row):
         'dt': row.dt,
         'user_id': properties.get('userId', None),
         'session_id': properties.get('sessionId', None),
-        'device': properties.get('device', None),
+        'device_code': properties.get('device_code', None),
         'event_timestamp': properties.get('eventTimestamp', None)
     }
     return Row(**record)
-
-
-def rename(col_name):
-    return col_name.lower().replace(' ', '_').replace(')', '')
 
 
 def run(spark, args):
@@ -46,9 +42,6 @@ def run(spark, args):
 
     user_device_timespent = spark.sql(query.device_sql)
     user_device_timespent_pivoted = user_device_timespent.groupby('user_id') \
-        .pivot('device').agg(sum('device_minutes'))
+        .pivot('device_code').agg(sum('device_minutes'))
     user_device_timespent_pivoted.cache()
-    for col in user_device_timespent_pivoted.columns:
-        user_device_timespent_pivoted = user_device_timespent_pivoted.withColumnRenamed(
-            col, rename(col))
     user_device_timespent_pivoted.write.parquet(args['output_path_device'], mode='overwrite')

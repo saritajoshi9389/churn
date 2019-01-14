@@ -7,23 +7,18 @@ from tests import session_helper
 from tests.utils import get_data_dict
 
 
-def test_rename():
-    """Rename device 'categories' to lowercase w/ no spaces."""
-    assert spark_job.rename('Cool Smart TV 5000)') == 'cool_smart_tv_5000'
-
-
 def test_parse():
     test_dict = {
         'properties': {
             'userId': 1,
             'sessionId': 'a1',
-            'device': 'ANDROID',
+            'device_code': 'android',
             'eventTimestamp': '2018-12-04T20:00:00.000Z'
         }
     }
     test_data = Row(value=json.dumps(test_dict), dt='2018-04-21')
     row = spark_job.parse(test_data)
-    for col in ['user_id', 'session_id', 'device', 'event_timestamp']:
+    for col in ['user_id', 'session_id', 'device_code', 'event_timestamp']:
         assert col in row
 
 
@@ -46,7 +41,7 @@ def test_parse_different_schema():
     }
     test_data = Row(value=json.dumps(test_dict), dt='2018-04-21')
     row = spark_job.parse(test_data)
-    for col in ['user_id', 'session_id', 'device', 'event_timestamp']:
+    for col in ['user_id', 'session_id', 'device_code', 'event_timestamp']:
         assert row[col] is None
 
 
@@ -79,7 +74,7 @@ def validate_device(spark, output_path):
     assert data.count() == 2
     data_dict = get_data_dict(data)
     assert float(data_dict[1]['android']) == 120.0
-    assert float(data_dict[2]['apple_tv']) == 120.0
+    assert float(data_dict[2]['appletv']) == 120.0
     assert data_dict[2]['desktop'] is None
 
 
