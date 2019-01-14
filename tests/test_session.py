@@ -23,7 +23,7 @@ def test_parse():
 
 
 def test_parse_missing_dt():
-    test_dict = "{'some': 'values'}"
+    test_dict = {'some': 'values'}
     test_data = Row(value=json.dumps(test_dict))
     with raises(AttributeError):
         row = spark_job.parse(test_data)
