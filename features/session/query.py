@@ -45,7 +45,7 @@ from
 ) session_lengths
 where
     -- remove sessions 8 hours or longer
-    session_length < 480
+    session_length_min < 480
 group by
     user_id
 
