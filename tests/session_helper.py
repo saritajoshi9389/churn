@@ -15,6 +15,7 @@ dt_1_records = [
             'eventTimestamp': '2018-12-04T21:00:00.000Z'
         }
     },
+    # sessions in wrong dt partition don't count
     {
         'properties': {
             'userId': 1,
@@ -136,10 +137,27 @@ dt_3_records = [
             'eventTimestamp': '2018-12-31T10:00:00.000Z'
         }
     },
+    # overlong session will be in sessions but not dependent queries
     {
         'properties': {
             'userId': 2,
             'sessionId': 'b4',
+            'device_code': 'appletv',
+            'eventTimestamp': '2018-12-31T12:00:00.000Z'
+        }
+    },
+    {
+        'properties': {
+            'userId': 2,
+            'sessionId': 'b4',
+            'device_code': 'appletv',
+            'eventTimestamp': '2018-12-31T21:00:00.000Z'
+        }
+    },
+    {
+        'properties': {
+            'userId': 2,
+            'sessionId': 'b5',
             'device_code': 'appletv',
             'eventTimestamp': '2019-01-01T10:00:00.000Z'
         }
