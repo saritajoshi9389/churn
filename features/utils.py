@@ -11,3 +11,7 @@ def dt_start(dt, days_back=28):
 
 def dt_path(output_path, query_dt):
     return os.path.join(output_path, 'dt={}'.format(query_dt))
+
+
+def yesterday_dt():
+    return (datetime.now() - timedelta(1)).strftime('%Y-%m-%d')
