@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from features import utils
 
 
@@ -13,3 +14,7 @@ def test_dt_start():
 
 def test_dt_path():
     assert utils.dt_path('s3://mypath', '2019-01-09') == 's3://mypath/dt=2019-01-09'
+
+
+def test_yesterday_dt():
+    assert utils.yesterday_dt() == (datetime.now() - timedelta(1)).strftime('%Y-%m-%d')
