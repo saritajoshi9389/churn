@@ -1,5 +1,5 @@
 import pandas as pd
-from features.training_prep import spark_job
+from features.joined import spark_job
 from pyspark.sql import Row
 
 
@@ -9,7 +9,7 @@ def setup_subscription(spark, args):
             'user_id': 1,
             'months_subscribing': 10,
             'has_disconnected': 1,
-            'churned': 1
+            'churned': 0
         },
         {
             'user_id': 2,
@@ -80,9 +80,10 @@ def validate_job(spark, output_path):
     # no headers
     assert columns[0] == '_c0'
     df = pd.DataFrame(data.collect())
-    # the first column after user_id MUST be churn 1/0 for training data
-    for churn_value in list(df[1]):
-        assert int(churn_value) in (0, 1)
+    # first column is NOT churn
+    first_col = df[0].tolist()
+    assert first_col[0] != 0
+    assert first_col[1] != 0
 
 
 def test_job(spark):
@@ -91,7 +92,7 @@ def test_job(spark):
         'input_subscription': 'tests/sample_input/subscription_to_join/',
         'input_performance': 'tests/sample_input/performance_to_join/',
         'input_activity': 'tests/sample_input/activity_to_join/',
-        'output_path': 'tests/sample_output/training/'
+        'output_path': 'tests/sample_output/joined/'
     }
     setup_subscription(spark, test_args)
     setup_performance(spark, test_args)

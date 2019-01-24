@@ -5,7 +5,7 @@ from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
 
-from features.training_prep import spark_job
+from features.joined import spark_job
 from features.utils import yesterday_dt
 
 args = getResolvedOptions(sys.argv, [

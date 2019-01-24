@@ -26,12 +26,16 @@ def run(spark, args):
     for feature in ['total_timespent', 'num_sessions', 'active_days']:
         users = users.fillna({feature: 0})
 
+    users.cache()
+
     features = list(users.columns)
     features.remove('user_id')
     features.remove('churned')
-    features = ['churned'] + features
 
+    # write data with no churn status
     users.select(features).write.csv(
         dt_path(args['output_path'], dt),
         compression='gzip',
         mode='overwrite')
+
+    return users
