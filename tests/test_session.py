@@ -64,7 +64,8 @@ def setup_sample(spark, args, records=None):
 def validate_session(spark, args):
     data = spark.read.load(args['output_path']).where("dt = '{}'".format(args['dt']))
     assert data.count() == 3
-    assert 'a4' not in list(data['session_id'])
+    df = pd.DataFrame(data.collect(), columns=data.columns)
+    assert 'a4' not in list(df['session_id'])
 
 
 def validate_activity(spark, args):
