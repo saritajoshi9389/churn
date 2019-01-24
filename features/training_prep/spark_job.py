@@ -28,6 +28,8 @@ def run(spark, args):
 
     features = list(users.columns)
     features.remove('user_id')
+    features.remove('churned')
+    features = ['churned'] + features
 
     users.select(features).write.csv(
         dt_path(args['output_path'], dt),
