@@ -1,3 +1,4 @@
+import pandas as pd
 from features.training_prep import spark_job
 from pyspark.sql import Row
 
@@ -8,7 +9,7 @@ def setup_subscription(spark, args):
             'user_id': 1,
             'months_subscribing': 10,
             'has_disconnected': 1,
-            'churned': 0
+            'churned': 1
         },
         {
             'user_id': 2,
@@ -78,9 +79,10 @@ def validate_job(spark, output_path):
     columns = list(data.columns)
     # no headers
     assert columns[0] == '_c0'
-    # the first column after user_id MUST be churn status for training data
-    for churn_value in list(data['_c1']):
-        assert churn_value in (0, 1)
+    df = pd.DataFrame(data.collect())
+    # the first column after user_id MUST be churn 1/0 for training data
+    for churn_value in list(df[1]):
+        assert int(churn_value) in (0, 1)
 
 
 def test_job(spark):
