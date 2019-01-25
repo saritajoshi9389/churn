@@ -5,8 +5,7 @@ from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
 
-from features.join import spark_job
-from features.utils import yesterday_dt
+from features.joined_with_churn import spark_job
 
 args = getResolvedOptions(sys.argv, [
     'JOB_NAME',
@@ -15,8 +14,6 @@ args = getResolvedOptions(sys.argv, [
     'input_performance',
     'input_activity',
     'output_path'])
-if args['dt'] == 'yesterday':
-    args['dt'] = yesterday_dt()
 
 sc = SparkContext()
 glueContext = GlueContext(sc)

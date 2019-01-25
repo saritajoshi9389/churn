@@ -1,6 +1,7 @@
 from features.utils import dt_path
 from pyspark.sql.functions import expr
 
+
 def run(spark, args):
 
     dt = args['dt']
@@ -25,4 +26,16 @@ def run(spark, args):
     for feature in ['total_timespent', 'num_sessions', 'active_days']:
         users = users.fillna({feature: 0})
 
-    users.write.parquet(dt_path(args['output_path'], dt))
+    users.cache()
+
+    features = list(users.columns)
+    features.remove('user_id')
+    features.remove('churned')
+
+    # write data with no churn status
+    users.select(features).write.csv(
+        dt_path(args['output_path'], dt),
+        compression='gzip',
+        mode='overwrite')
+
+    return users

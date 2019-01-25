@@ -2,9 +2,9 @@ def get_sub_sql(query_dt='', month_later_dt=''):
     return """
     select
       query_date.user_id,
+      case when subsequent_churn.user_id is null then 0 else 1 end as churned,
       purchase_n as months_subscribing,
-      has_disconnected,
-      case when subsequent_churn.user_id is null then 0 else 1 end as churned
+      has_disconnected
     from
     (
       select

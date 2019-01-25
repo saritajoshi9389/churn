@@ -1,4 +1,5 @@
-from features.join import spark_job
+import pandas as pd
+from features.joined import spark_job
 from pyspark.sql import Row
 
 
@@ -68,11 +69,21 @@ def setup_activity(spark, args):
 
 
 def validate_job(spark, output_path):
-    """Left join, no null values."""
-    data = spark.read.load(output_path)
+    # the data must be a csv
+    data = spark.read.csv(output_path)
+    # left join
     assert data.count() == 2
+    # no null values
     for col in data.columns:
         assert data.where(data[col].isNull()).count() == 0
+    columns = list(data.columns)
+    # no headers
+    assert columns[0] == '_c0'
+    df = pd.DataFrame(data.collect())
+    # first column is NOT churn
+    first_col = df[0].tolist()
+    assert first_col[0] != 0
+    assert first_col[1] != 0
 
 
 def test_job(spark):
