@@ -1,6 +1,9 @@
 *.csv*
 *.parquet
+*.zip
 *.crc
+*.dat
+*.log
 *_SUCCESS
 
 *.pyc
