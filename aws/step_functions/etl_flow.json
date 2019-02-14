@@ -1,0 +1,66 @@
+{
+  "StartAt": "Start ETL Job",
+  "States": {
+    "Start ETL Job": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:602761496211:function:datascience-glue-start-job-run",
+      "ResultPath": "$.JobRunId",
+      "Next": "Get ETL Job Status",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ]
+    },
+    "Get ETL Job Status": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:602761496211:function:datascience-get-job-run",
+      "Next": "ETL Job Complete?",
+      "ResultPath": "$.JobRunState",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ]
+    },
+    "ETL Job Complete?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.JobRunState",
+          "StringEquals": "FAILED",
+          "Next": "Churn Job Failed"
+        },
+        {
+          "Variable": "$.JobRunState",
+          "StringEquals": "STOPPED",
+          "Next": "Churn Job Failed"
+        },
+        {
+          "Variable": "$.JobRunState",
+          "StringEquals": "SUCCEEDED",
+          "Next": "End Flow"
+        }
+      ],
+      "Default": "Get ETL Job Status"
+    },
+    "ETL Job Failed": {
+      "Type": "Fail",
+      "Cause": "AWS ETL Job Failed",
+      "Error": "DescribeJob returned FAILED"
+    },
+    "End Flow": {
+      "Type": "Succeed"
+    }
+  }
+}

@@ -1,10 +1,12 @@
 # Churn scoring MVP
 
-Feature engineering is Spark jobs in `features/`. AWS glue scripts requires this repo's `features` module.
+AWS scripts and configs are in `aws/`.
 
-AWS glue scripts themselves in `glue/`.
+AWS glue scripts requires this repo's `features` module, which contains all Spark jobs for feature engineering.
 
 # Deploy
+
+### Glue
 
 To deploy a Glue job, assume the appropriate role and then you can use the
 - web console
@@ -14,7 +16,7 @@ To deploy a Glue job, assume the appropriate role and then you can use the
 1. Zip the Python requirements
     `zip -r churn-packages.zip features venv/lib/python2.7/site-packages/dateutil`
 2. Upload churn-packages.zip to S3, using the appropriate role.
-3. If the Glue job (i.e. the script in the `glue/` directory) has changed, upload it to S3 using the appropriate role. However, it is unlikely that the glue job will change as it is primarily boilerplate.
+3. If the Glue job (i.e. the script in the `aws/glue/` directory) has changed, upload it to S3 using the appropriate role. However, it is unlikely that the glue job will change as it is primarily boilerplate.
 4. If a job with this name and glue script does not exist, create a new one via the above methods. Set the following options (`cli` | `Python keyword argument`):
     - job name (`--name` | `Name`)
     - role (`--role` | `Role`)
@@ -32,7 +34,15 @@ To actually run jobs you have a choice of:
 To see a job status
 - get-job-run
 
-## Local setup and tests
+### Sagemaker
+
+### Lambda
+
+Add instructions
+
+### Step functions
+
+# Local setup and tests
 
 You'll need a machine with Spark installed. 
 
