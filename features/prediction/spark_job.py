@@ -1,3 +1,4 @@
+"""Does not actually do prediction. It just ties predictions to users."""
 from features.utils import dt_path
 from pyspark.sql.functions import monotonically_increasing_id
 

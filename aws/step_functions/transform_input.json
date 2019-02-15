@@ -4,12 +4,12 @@
   "wait_time": 1,
   "TransformArguments": {
     "TransformJobName": "SET-BY-LAMBDA",
-    "ModelName": "linear-learner-2019-02-14-22-11-30-516",
+    "ModelName": "linear-best-2019-02-15",
     "TransformInput": {
       "DataSource": {
         "S3DataSource": {
           "S3DataType": "S3Prefix",
-          "S3Uri": "s3://datascience-churn/sagemaker/users-all"
+          "S3Uri": "s3://datascience-churn/aws/sagemaker/users-all"
         }
       },
       "ContentType": "text/csv",
@@ -17,7 +17,7 @@
       "SplitType": "Line"
     },
     "TransformOutput": {
-      "S3OutputPath": "s3://datascience-churn/sagemaker/output"
+      "S3OutputPath": "s3://datascience-churn/aws/sagemaker/output"
     },
     "TransformResources": {
       "InstanceType": "ml.c4.xlarge",

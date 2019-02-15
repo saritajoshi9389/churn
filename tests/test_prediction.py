@@ -1,5 +1,5 @@
-from tests.test_joined import setup_subscription
-from features.user_prediction import spark_job
+from tests.test_join import setup_subscription
+from features.prediction import spark_job
 from features.utils import dt_path
 from pyspark.sql import Row
 

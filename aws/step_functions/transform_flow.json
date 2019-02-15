@@ -4,7 +4,7 @@
     "States": {
         "Start Transform Job": {
             "Type": "Task",
-            "Resource": "arn:aws:lambda:us-east-1:602761496211:function:datascience-batch-transform",
+            "Resource": "arn:aws:lambda:us-east-1:602761496211:function:datascience-sagemaker-create-transform-job",
             "ResultPath": "$.TransformArguments",
             "Next": "Get Transform Job Status",
             "Retry": [
@@ -20,7 +20,7 @@
         },
         "Get Transform Job Status": {
             "Type": "Task",
-            "Resource": "arn:aws:lambda:us-east-1:602761496211:function:datascience-get-transform-status",
+            "Resource": "arn:aws:lambda:us-east-1:602761496211:function:datascience-sagemaker-describe-transform-job",
             "Next": "Transform Job Complete?",
             "ResultPath": "$.TransformJobStatus",
             "Retry": [
@@ -40,12 +40,12 @@
                 {
                     "Variable": "$.TransformJobStatus",
                     "StringEquals": "Failed",
-                    "Next": "Churn Scoring Job Failed"
+                    "Next": "Transform Job Failed"
                 },
                 {
                     "Variable": "$.TransformJobStatus",
                     "StringEquals": "Stopped",
-                    "Next": "Churn Scoring Job Failed"
+                    "Next": "Transform Job Failed"
                 },
                 {
                     "Variable": "$.TransformJobStatus",
@@ -55,9 +55,9 @@
             ],
             "Default": "Get Transform Job Status"
         },
-        "Churn Scoring Job Failed": {
+        "Transform Job Failed": {
             "Type": "Fail",
-            "Cause": "AWS ETL Job Failed",
+            "Cause": "Transform Job Failed",
             "Error": "DescribeJob returned FAILED"
         },
         "End Flow": {
