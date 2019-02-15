@@ -1,5 +1,5 @@
 """
-Sample code to deploy a linear learner - 
+Sample code to deploy a linear learner.
 Deploy in notebook - command-line not authorized to deploy.
 
 Prerequisite: Training data in CSV form in S3, with the target / y variable
@@ -11,8 +11,8 @@ import sagemaker
 from sagemaker import get_execution_role
 from sagemaker.amazon.amazon_estimator import get_image_uri
 
-bucket = 'datascience-feature-eng-test-201901'
-prefix = 'sagemaker-linear-201902'
+bucket = 'datascience-churn'
+prefix = 'sagemaker-aws/sagemaker'
 NUM_FEATURES = 19
 
 role = get_execution_role()
@@ -25,9 +25,9 @@ s3_input_train = sagemaker.s3_input(
 s3_input_validation = sagemaker.s3_input(
     s3_data='s3://{}/{}/validation'.format(bucket, prefix),
     content_type='text/csv')
-s3_input_test = sagemaker.s3_input(s3_data='s3://{}/{}/test'.format(
-    bucket, prefix),
-    content_type='text/csv')
+# s3_input_test = sagemaker.s3_input(s3_data='s3://{}/{}/test'.format(
+#     bucket, prefix),
+#     content_type='text/csv')
 
 linear = sagemaker.estimator.Estimator(
     container,
@@ -47,7 +47,12 @@ linear.set_hyperparameters(
     early_stopping_patience=1,
     mini_batch_size=5000)
 
-linear.fit({'train': s3_input_train, 'validation': s3_input_validation, 'test': s3_input_test})
+linear.fit({
+    'train': s3_input_train,
+    'validation': s3_input_validation,
+    # 'test': s3_input_test
+})
 
-linear_predictor = linear.deploy(initial_instance_count=1,
-                                 instance_type='ml.m4.xlarge')
+# to DEPLOY a model - not necessary for batch transform.
+# linear_predictor = linear.deploy(initial_instance_count=1,
+#                                  instance_type='ml.m4.xlarge')
