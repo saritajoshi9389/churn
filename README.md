@@ -36,11 +36,23 @@ To see a job status
 
 ### Sagemaker
 
+Fitting a model automatically creates a model. It's not necessary to deploy a model to use batch transform.
+
+< TODO: FILL IN WHEN NOTEBOOKS ARE IN THIS REPO >
+
+For Batch Transform in boto3 or the CLI you'll need [Create Transform Job](https://docs.aws.amazon.com/cli/latest/reference/sagemaker/create-transform-job.html), plus [Describe Transform Job](https://docs.aws.amazon.com/cli/latest/reference/sagemaker/describe-transform-job.html) to track its progress. Under our pipeline, this will be run by boto3 in Lambda.
+
 ### Lambda
 
-Add instructions
+Lambda functions are in `aws/lambda/`. The Python files are named exactly as the CLI functions. On AWS they are prefixed with `datascience-{SERVICE}-{NAME}` i.e. `datascience-sagemaker-describe-transform-job`. Inputs referenced in the Lambda function will be passed via Step Function's input.
 
 ### Step functions
+
+Step functions are in `aws/step_functions/`:
+- {type}\_flow.json has the actual JSON that defines the state machine for Step Functions
+- {type}\_input.json has sample generic input to pass to cloud events.
+
+TODO: There are 2 flows and inputs here for Sagemaker Batch Transform (transform) and Glue (etl) but there should in fact be ONE complex flow encompassing Glue, Sagemaker Training and Sagemaker Batch Transform, with Lambda wrappers where necessary.
 
 # Local setup and tests
 

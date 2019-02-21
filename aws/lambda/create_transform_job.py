@@ -13,7 +13,7 @@ def lambda_handler(event, context):
     transform_inputs['TransformInput']['DataSource']['S3DataSource']['S3Uri'] = os.path.join(
         input_path, 'dt={}'.format(yesterday_dt))
 
-    transform_inputs['TransformOutput']['S3OutputPath']
+    output_path = transform_inputs['TransformOutput']['S3OutputPath']
     transform_inputs['TransformOutput']['S3OutputPath'] = os.path.join(output_path, 'dt={}'.format(yesterday_dt))
 
     transform_inputs['TransformJobName'] = 'churn-daily-scoring-{}'.format(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
