@@ -13,7 +13,7 @@ def parse(row):
         'dt': row.dt,
         'user_id': properties.get('userId', None),
         'session_id': properties.get('sessionId', None),
-        'device_code': properties.get('device_code', None),
+        'device_code': properties.get('deviceCode', None),
         'event_timestamp': properties.get('eventTimestamp', None)
     }
     return Row(**record)
