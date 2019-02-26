@@ -1,5 +1,5 @@
 import pandas as pd
-from features.joined import spark_job
+from features.join import spark_job
 from pyspark.sql import Row
 
 

@@ -1,0 +1,67 @@
+{
+    "Comment": "A state machine that submits a Job to Sagemaker Batch Transform and monitors the Job until it completes.",
+    "StartAt": "Start Transform Job",
+    "States": {
+        "Start Transform Job": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:602761496211:function:datascience-sagemaker-create-transform-job",
+            "ResultPath": "$.TransformArguments",
+            "Next": "Get Transform Job Status",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "IntervalSeconds": 1,
+                    "MaxAttempts": 3,
+                    "BackoffRate": 2
+                }
+            ]
+        },
+        "Get Transform Job Status": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:602761496211:function:datascience-sagemaker-describe-transform-job",
+            "Next": "Transform Job Complete?",
+            "ResultPath": "$.TransformJobStatus",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "IntervalSeconds": 1,
+                    "MaxAttempts": 3,
+                    "BackoffRate": 2
+                }
+            ]
+        },
+        "Transform Job Complete?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.TransformJobStatus",
+                    "StringEquals": "Failed",
+                    "Next": "Transform Job Failed"
+                },
+                {
+                    "Variable": "$.TransformJobStatus",
+                    "StringEquals": "Stopped",
+                    "Next": "Transform Job Failed"
+                },
+                {
+                    "Variable": "$.TransformJobStatus",
+                    "StringEquals": "Completed",
+                    "Next": "End Flow"
+                }
+            ],
+            "Default": "Get Transform Job Status"
+        },
+        "Transform Job Failed": {
+            "Type": "Fail",
+            "Cause": "Transform Job Failed",
+            "Error": "DescribeJob returned FAILED"
+        },
+        "End Flow": {
+            "Type": "Succeed"
+        }
+    }
+}

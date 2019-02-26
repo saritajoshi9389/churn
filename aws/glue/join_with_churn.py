@@ -5,7 +5,7 @@ from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
 
-from features.joined_with_churn import spark_job
+from features.join_with_churn import spark_job
 
 args = getResolvedOptions(sys.argv, [
     'JOB_NAME',

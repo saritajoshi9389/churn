@@ -5,15 +5,14 @@ from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
 
-from features.joined import spark_job
+from features.prediction import spark_job
 from features.utils import yesterday_dt
 
 args = getResolvedOptions(sys.argv, [
     'JOB_NAME',
     'dt',
     'input_subscription',
-    'input_performance',
-    'input_activity',
+    'input_prediction',
     'output_path'])
 if args['dt'] == 'yesterday':
     args['dt'] = yesterday_dt()

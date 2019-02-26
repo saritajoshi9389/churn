@@ -1,5 +1,5 @@
 from features.utils import dt_path
-import features.joined as join
+import features.join as join
 
 
 def run(spark, args):

@@ -1,6 +1,6 @@
 import pandas as pd
-import tests.test_joined as join_test
-from features.joined_with_churn import spark_job
+import tests.test_join as join_test
+from features.join_with_churn import spark_job
 
 
 def validate_job(spark, output_path):
