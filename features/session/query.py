@@ -15,6 +15,7 @@ def get_session_sql(query_dt='', days_back=1):
         dt between '{dt_start}' and '{query_dt}'
         and substr(event_timestamp, 1, 10) >= '{dt_start}'
         and substr(event_timestamp, 1, 10) < '{query_dt}'
+        and device_code is not null
     group by
         user_id,
         session_id,
