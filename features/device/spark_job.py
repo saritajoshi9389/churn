@@ -11,7 +11,6 @@ def run(spark, args):
         "dt between '{dt_start}' and '{query_dt}'".format(
             query_dt=query_dt, dt_start=dt_start))
 
-    sessions = spark.read.load(args['input_path'])
     sessions.createOrReplaceTempView('sessions')
 
     user_device_timespent = spark.sql(query.device_sql)

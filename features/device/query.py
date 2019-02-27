@@ -12,6 +12,8 @@ from
         cast(unix_timestamp(session_end) - unix_timestamp(session_start) as float) / 60.0 as session_length_min
     from
         sessions
+    where
+        device_code is not null
 
 ) session_lengths
 where
